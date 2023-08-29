@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  - Created by Team 7 and Osman Balci on 2023.4.24
+  - Copyright © 2023 Team 7 and Osman Balci. All rights reserved.
+  -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+<!-- This page is constructed based on the siteTemplate -->
+<ui:composition template="/template/siteTemplate.xhtml">
+
+    <ui:define name="title">
+        <!-- Set the page title -->
+        <h:outputText value="Edit Account"/>
+    </ui:define>
+
+    <!-- Create the content for this page below -->
+    <ui:define name="editableContent">
+        <c:if test="#{userController.userIsSignedIn() == true}">
+            <div align="center" style="width:80%; margin:0 auto;">
+                <h:form id="EditAccountProfileForm">
+                    <h1>Edit Account Profile</h1>
+                    <p:panelGrid columns="2" columnClasses="panelGridColumn1, panelGridColumn2">
+                        <!--
+                        ********************************
+                        *          FIRST NAME          *
+                        ********************************
+                        -->
+                        <p:outputLabel value="First Name:" for="firstName"/>
+                        <p:inputText id="firstName" value="#{userController.signedInUser.firstName}"
+                                     style="width: 290px"
+                                     required="true" requiredMessage="First Name is required!">
+                            <f:validateLength minimum="2"/>
+                        </p:inputText>
+
+                        <!--
+                        ********************************
+                        *         MIDDLE NAME          *
+                        ********************************
+                        -->
+                        <p:outputLabel value="Middle Name:" for="middleName"/>
+                        <p:inputText id="middleName" value="#{userController.signedInUser.middleName}"
+                                     style="width: 290px"
+                                     required="false">
+                        </p:inputText>
+
+                        <!--
+                        ********************************
+                        *           LAST NAME          *
+                        ********************************
+                        -->
+                        <p:outputLabel value="Last Name:" for="lastName"/>
+                        <p:inputText id="lastName" value="#{userController.signedInUser.lastName}" style="width: 290px"
+                                     required="true" requiredMessage="Last Name is required!">
+                            <f:validateLength minimum="2"/>
+                        </p:inputText>
+
+                        <!--
+                        ********************************
+                        *        ADDRESS LINE 1        *
+                        ********************************
+                        -->
+                        <p:outputLabel value="Address Line 1:" for="address1"/>
+                        <p:inputText id="address1" value="#{userController.signedInUser.address1}" style="width: 290px"
+                                     required="true" requiredMessage="Address Line 1 is required!">
+                            <f:validateLength minimum="2"/>
+                        </p:inputText>
+
+                        <!--
+                        ********************************
+                        *        ADDRESS LINE 2        *
+                        ********************************
+                        -->
+                        <p:outputLabel value="Address Line 2:" for="address2"/>
+                        <p:inputText id="address2" value="#{userController.signedInUser.address2}" style="width: 290px"
+                                     required="false"/>
+
+                        <!--
+                        ********************************
+                        *             CITY             *
+                        ********************************
+                        -->
+                        <p:outputLabel value="City:" for="city"/>
+                        <p:inputText id="city" value="#{userController.signedInUser.city}" style="width: 290px"
+                                     required="true" requiredMessage="City name is required!">
+                            <f:validateLength minimum="2"/>
+                        </p:inputText>
+
+                        <!--
+                        ********************************
+                        *      STATE ABBREVIATION      *
+                        ********************************
+                        -->
+                        <p:outputLabel value="State:" for="state"/>
+                        <h:selectOneMenu id="state" value="#{userController.signedInUser.state}">
+                            <f:selectItems value="#{userController.listOfStates()}" var="state"
+                                           itemLabel="#{state}" itemValue="#{state}"/>
+                        </h:selectOneMenu>
+
+                        <!--
+                        ********************************
+                        *           ZIP CODE           *
+                        ********************************
+                        -->
+                        <p:outputLabel value="Zip Code:" for="zipcode"/>
+                        <p:inputText id="zipcode" value="#{userController.signedInUser.zipcode}" style="width: 290px"
+                                     required="true" requiredMessage="Zip Code is required!">
+                            <f:validateLength minimum="5"/>
+                            <f:validator validatorId="zipCodeValidator"/>
+                        </p:inputText>
+
+                        <!--
+                        ********************************
+                        *         EMAIL ADDRESS        *
+                        ********************************
+                        -->
+                        <p:outputLabel value="Email:" for="email"/>
+                        <p:inputText id="email" value="#{userController.signedInUser.email}" style="width: 290px"
+                                     required="true" requiredMessage="Email address is required!">
+                            <f:validateLength minimum="2"/>
+                            <f:validator validatorId="emailValidator"/>
+                        </p:inputText>
+
+                        <!-- Username is listed in an uneditable mode and cannot be changed -->
+                        <h:outputText value="Username:"/>
+                        <h:outputText value="#{userController.signedInUser.username}"/>
+                    </p:panelGrid>
+                    <br/>
+                    <!--
+                    *********************************
+                    *   TWO-FACTOR AUTHENTICATION   *
+                    *********************************
+                    -->
+                    <p:fieldset id="twoFAgroup" legend="Two-Factor Authentication" toggleable="true" toggleSpeed="500">
+                        <p:panelGrid columns="2" columnClasses="panelGridColumn1, panelGridColumn2">
+
+                            <p:outputLabel value="Two-Factor Authentication via Email:" for="twoFAEmail"/>
+                            <p:toggleSwitch id="twoFAEmail" value="#{userController.twoFAonViaEmail}">
+                                <p:ajax update="twoFAgroup"/>
+                            </p:toggleSwitch>
+
+                            <p:outputLabel value="Two-Factor Authentication via SMS:" for="twoFAsms"/>
+                            <p:toggleSwitch id="twoFAsms" value="#{userController.twoFAonViaSMS}">
+                                <p:ajax update="twoFAgroup"/>
+                            </p:toggleSwitch>
+
+                            <p:outputLabel for="cellPhoneNumber" value="Cell Phone Number:"/>
+                            <!--
+                            PrimeFaces inputMask enforces the phone number format defined by mask="(999) 999-9999"
+                            and prevents a non-numeric character to be entered by the user.
+                            -->
+                            <p:inputMask id="cellPhoneNumber" mask="(999) 999-9999"
+                                         required="true" value="#{userController.signedInUser.cellPhoneNumber}"/>
+
+                            <p:outputLabel for="carrier" value="Cell Phone Carrier:"/>
+                            <p:selectOneMenu required="true" id="carrier" value="#{userController.signedInUser.cellPhoneCarrier}">
+                                <f:selectItem itemLabel="Select a Carrier" itemValue="" noSelectionOption="true"/>
+                                <f:selectItem itemLabel="AT&amp;T" itemValue="mms.att.net"/>
+                                <f:selectItem itemLabel="Sprint" itemValue="pm.sprint.com"/>
+                                <f:selectItem itemLabel="T-Mobile" itemValue="tmomail.net"/>
+                                <f:selectItem itemLabel="Verizon" itemValue="vzwpix.com"/>
+                                <f:selectItem itemLabel="Virgin Mobile" itemValue="vmpix.com"/>
+                            </p:selectOneMenu>
+                        </p:panelGrid>
+                    </p:fieldset>
+                    <br/><br/>
+                    <!--
+                    ================================
+                    |          SAVE Button         |
+                    ================================
+                    -->
+                    <p:commandButton id="submit" value="Save" icon="fas fa-save" styleClass="rounded-button"
+                                     ajax="false" action="#{userController.updateAccount()}"/>
+                    &nbsp;
+                    <!--
+                    ================================
+                    |         CANCEL Button        |
+                    ================================
+                    -->
+                    <p:button outcome="/userAccount/Profile" value="Cancel"
+                              icon="fas fa-ban" styleClass="ui-button-outlined"/>
+                    <br/><br/>
+                </h:form>
+            </div>
+        </c:if>
+        <c:if test="#{userController.userIsSignedIn() == false}">
+            <div align="center"><h1>Cybercriminal Activity is Detected and Rejected!</h1></div>
+        </c:if>
+    </ui:define>
+</ui:composition>
+</html>

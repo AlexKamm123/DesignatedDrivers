@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  - Created by Team 7 and Osman Balci on 2023.4.30
+  - Copyright © 2023 Team 7 and Osman Balci. All rights reserved.
+  -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+<!-- This page is constructed based on the siteTemplate -->
+<ui:composition template="/template/siteTemplate.xhtml">
+
+    <ui:define name="title">
+        <!-- Set the page title -->
+        <h:outputText value="Edit Car"/>
+    </ui:define>
+
+    <!-- Create the content for this page below -->
+    <ui:define name="editableContent">
+        <c:if test="#{userController.userIsSignedIn() == true}">
+            <div align="center" style="width:80%; margin:0 auto;">
+                <h:form id="EditCarProfileForm">
+                    <h1>Edit Car</h1>
+                    <p:panelGrid columns="2" columnClasses="panelGridColumn1, panelGridColumn2">
+
+                        <!--
+                        **************************
+                        *          MAKE          *
+                        **************************
+                        -->
+                        <p:outputLabel value="Make:" for="make"/>
+                        <p:inputText id="make" value="#{carController.selected.make}"
+                                     style="width: 290px"
+                                     required="true" requiredMessage="Make is required!">
+                            <f:validateLength minimum="2"/>
+                        </p:inputText>
+
+                        <!--
+                        **************************
+                        *         MODEL          *
+                        **************************
+                        -->
+                        <p:outputLabel value="Model:" for="model"/>
+                        <p:inputText id="model" value="#{carController.selected.model}"
+                                     style="width: 290px"
+                                     required="true" requiredMessage="Model is required!">
+                        </p:inputText>
+
+                        <!--
+                        ************************************
+                        *           LICENSE PLATE          *
+                        ************************************
+                        -->
+                        <p:outputLabel value="License Plate:" for="licensePlate"/>
+                        <p:inputText id="licensePlate" value="#{carController.selected.licensePlate}" style="width: 290px"
+                                     required="true" requiredMessage="License Plate is required!">
+                        </p:inputText>
+
+                        <!--
+                        *******************************
+                        *        MAX OCCUPANTS        *
+                        *******************************
+                        -->
+                        <p:outputLabel value="Max Additional Occupants:" for="maxOccupants"/>
+                        <p:inputNumber id="maxOccupants" value="#{carController.selected.maxOccupants}" style="width: 290px"
+                                     required="true" requiredMessage="Max Occupants is required!">
+                        </p:inputNumber>
+
+                        <!-- Username is listed in an uneditable mode and cannot be changed -->
+                        <h:outputText value="Username:"/>
+                        <h:outputText value="#{userController.signedInUser.username}"/>
+                    </p:panelGrid>
+                    <br/><br/>
+                    <!--
+                    ================================
+                    |          SAVE Button         |
+                    ================================
+                    -->
+                    <p:commandButton id="submit" value="Save" icon="fas fa-save" styleClass="rounded-button"
+                                     ajax="false" action="#{carController.create()}"/>
+                    &nbsp;
+                    <!--
+                    ================================
+                    |         CANCEL Button        |
+                    ================================
+                    -->
+                    <p:button outcome="/userAccount/Profile" value="Cancel"
+                              icon="fas fa-ban" styleClass="ui-button-outlined"/>
+                    <br/><br/>
+                </h:form>
+            </div>
+        </c:if>
+        <c:if test="#{userController.userIsSignedIn() == false}">
+            <div align="center"><h1>Cybercriminal Activity is Detected and Rejected!</h1></div>
+        </c:if>
+    </ui:define>
+</ui:composition>
+</html>

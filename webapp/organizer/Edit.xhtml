@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  - Created by Team 7 and Osman Balci on 2023.4.26
+  - Copyright © 2023 Team 7 and Osman Balci. All rights reserved.
+  -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+<!-- Do not enter tags before the composition line since they are ignored by JSF -->
+
+<!-- This page is constructed based on the siteTemplate -->
+<ui:composition template="/template/siteTemplate.xhtml">
+
+    <ui:define name="title">
+        <!-- Set the page title to Contact Us -->
+        <h:outputText value="Edit Event" />
+    </ui:define>
+
+    <!-- Create the content for this page below -->
+    <ui:define name="editableContent">
+
+        <h:form id="EditCompositionForm">
+            <div align="center">
+                <br/>
+                <span class="title">Edit Event Details</span>
+                <br/><br/>
+                <p:panelGrid columns="2" columnClasses="panelGridColumn1, panelGridColumn2" style="width:40%">
+                    <p:outputLabel value="Name:" for="name"/>
+                    <p:inputText id="name" value="#{eventController.selected.name}"
+                                 placeholder="Enter Event Name"
+                                 required="true" requiredMessage="Event Name is Required!">
+                    </p:inputText>
+
+                    <!-- Sets privacy for event -->
+                    <p:outputLabel value="Privacy:" for="visibility"/>
+                    <p:selectOneMenu id="visibility" required="true" requiredMessage="Please Select a Category!"
+                                     value="#{eventController.selected.visibility}">
+                        <f:selectItem itemLabel="Public" itemValue="Public"/>
+                        <f:selectItem itemLabel="Private" itemValue="Private"/>
+                    </p:selectOneMenu>
+
+                    <!-- Driver Passcode -->
+                    <p:outputLabel value="Driver Passcode:"/>
+                    <h:outputText value="#{eventController.selected.driverCode}"
+                                  style="vertical-align: top"/>
+
+                    <!-- Passenger Passcode -->
+                    <p:outputLabel value="Passenger Passcode:"/>
+                    <h:outputText value="#{eventController.selected.passengerCode}"
+                                  style="vertical-align: top"/>
+
+                    <!-- Event Address -->
+                    <p:outputLabel value="Address:" for="address"/>
+                    <p:inputText id="address" value="#{eventController.selected.address}"
+                                 placeholder="Enter Address" style="width:100%"
+                                 required="true" requiredMessage="Address is Required!"/>
+
+                    <!-- Event Start Time -->
+                    <p:outputLabel value="Start Time:" for="start"/>
+                    <p:datePicker id="start" value="#{eventController.startDate}" showTime="true" timeInput="true"/>
+
+                    <!-- Event End Time -->
+                    <p:outputLabel value="End Time:" for="end"/>
+                    <p:datePicker id="end" value="#{eventController.endDate}" showTime="true" timeInput="true"/>
+                </p:panelGrid>
+                <br />
+
+                <span class="headingText">Event Photo</span>
+
+                <br />
+
+                <img src="#{eventController.getImage(eventController.selected)}" style="width:400px" alt=""/>
+                <br />
+                <br />
+                <span class="headingText">Event Description</span>
+
+                <p:textEditor id="editor" secure='false' value="#{eventController.selected.description}" height="500"
+                              placeholder="Enter your email content here" />
+                <br />
+
+
+                <br/><br/>
+
+                <h:panelGroup>
+                    <!-- SAVE button -->
+                    <p:commandButton value="Save" icon="fas fa-save" styleClass="rounded-button"
+                                     ajax="false" action="/organizer/MyEvents?faces-redirect=true"
+                                     actionListener="#{eventController.update()}"
+                                     update="display,:MyEventListForm:datalist,:growlInfoMessage"
+                                     oncomplete="handleSubmit(args, 'EventEditDialog');"/>
+                    &nbsp;
+                    <!-- CANCEL button -->
+                    <p:commandButton value="Cancel" icon="fas fa-ban" styleClass="ui-button-outlined"
+                                     immediate="true" action="/organizer/MyEvents?faces-redirect=true"/>
+
+                </h:panelGroup>
+            </div>
+            <br/><br/>
+        </h:form>
+
+        <!-- Autocomplete Script -->
+        <script type="text/javascript">
+            window.onload = function() {
+                if (typeof google !== "undefined") {
+                    Autocomplete('EditCompositionForm:address');
+                } else {
+                    console.error("Google Maps API not loaded yet.");
+                }
+            }
+        </script>
+    </ui:define>
+</ui:composition>
+<!-- Do not enter tags after the composition line since they are ignored by JSF -->
+
+</html>

@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  - Created by Team 7 and Osman Balci on 2023.5.1
+  - Copyright © 2023 Team 7 and Osman Balci. All rights reserved.
+  -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+
+<!-- This page is constructed based on the siteTemplate -->
+<body>
+<ui:composition template="/template/siteTemplate.xhtml">
+    <ui:define name="title">
+        <!-- Set the page title -->
+        <h:outputText value="List of Public Events" />
+    </ui:define>
+
+    <!-- Create the content for this page below -->
+    <ui:define name="editableContent">
+
+        <h:form id="PublicEventViewForm" class="ui-datatable-data" >
+            <div align="center">
+                <!-- Display the selected event's cover image -->
+                <img src="#{eventController.getImage(eventController.selected)}"
+                     style="width:400px" alt=""  />
+                <br /><br />
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" columnClasses="panelGridColumn1, panelGridColumn2"
+                                 rendered="#{eventController.selected != null}">
+                        <!-- Event Name -->
+                        <h:outputText value="Name:"/>
+                        <h:outputText value="#{eventController.selected.name}"/>
+
+                        <!-- Event Location -->
+                        <h:outputText value="Location:"/>
+                        <h:outputText value="#{eventController.selected.address}"/>
+
+                        <!-- Event Start Time -->
+                        <h:outputText value="Start Time:"/>
+                        <h:outputText value="#{eventController.selected.startTime}" >
+                        </h:outputText>
+
+                        <!-- Event End Time -->
+                        <h:outputText value="End Time:"/>
+                        <h:outputText value="#{eventController.selected.endTime}">
+                        </h:outputText>
+
+                        <!-- Event Publisher -->
+                        <h:outputText value="Created By:"/>
+                        <h:outputText value="#{eventController.getUser(eventController.selected).username}"/>
+                    </p:panelGrid>
+                    <br/>
+                    &nbsp;
+                    <!-- Event Description -->
+                    <span class="titleSmall">Event Description</span>
+                    <br/>
+                    &nbsp;
+                    <br/>
+                    <fieldset style="width: 90%">
+                        <h:outputText value="#{eventController.selected.description}" escape="false"/>
+                    </fieldset>
+                </h:panelGroup>
+                <br/>
+                <div align="center">
+                    <h:panelGroup>
+                        <p:panelGrid columns="2" style="width:40%" styleClass="borderless" columnClasses="panelGridColumn1, panelGridColumnTwo">
+
+                            <!-- Starting Address -->
+                            <p:outputLabel value="Starting / Destination Address: " for="requestAddress"/>
+                            <p:inputText id="requestAddress" value="#{requestController.selected.address}" style="width:100%"/>
+
+                            <!-- Number of People -->
+                            <p:outputLabel value="Number of Passengers: " for="numPassengers"/>
+                            <p:inputText id="numPassengers" value="#{requestController.selected.numPassengers}"/>
+
+                        </p:panelGrid>
+                        <br/>
+                        <!-- Direction of Travel -->
+                        <p:selectOneButton value="#{requestController.selected.direction}">
+                            <f:selectItem itemLabel="To Event" itemValue="To Event"/>
+                            <f:selectItem itemLabel="From Event" itemValue="From Event"/>
+                        </p:selectOneButton>
+                        <br/>
+                    </h:panelGroup>
+                </div>
+                <br/><br/>
+                <h:panelGroup>
+                    <!-- REQUEST RIDE button -->
+                    <p:commandButton value="Request Ride" icon="fas fa-taxi" styleClass="rounded-button"
+                                     action="#{requestController.requestRide()}"/>
+                    &nbsp;
+                    <!-- BACK button -->
+                    &nbsp;
+                    <p:commandButton value="Back" icon="fas fa-arrow-left" styleClass="ui-button-outlined"
+                                     action="/publicEvent/List?faces-redirect=true"/>
+                </h:panelGroup>
+            </div>
+        </h:form>
+
+        <!-- Script for running the address autocomplete -->
+        <script type="text/javascript">
+            window.onload = function() {
+                if (typeof google !== "undefined") {
+                    Autocomplete('PublicEventViewForm:requestAddress');
+                } else {
+                    console.error("Google Maps API not loaded yet.");
+                }
+            }
+        </script>
+
+    </ui:define>
+</ui:composition>
+</body>
+</html>

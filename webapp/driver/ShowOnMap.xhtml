@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  - Created by Team 7 and Osman Balci on 2023.4.29
+  - Copyright © 2023 Team 7 and Osman Balci. All rights reserved.
+  -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+<!-- This page is constructed based on the siteTemplate -->
+<ui:composition template="/template/siteTemplate.xhtml">
+    <ui:define name="title">
+        <!-- Set the page title -->
+        <h:outputText value="Request on Map"/>
+    </ui:define>
+
+    <!-- Create the content for this page below -->
+    <ui:define name="editableContent">
+        <!--
+        ==========================================================================
+        * Set PROJECT_STAGE to Production in web.xml to prevent the error message:
+        * "The form component needs to have a UIForm in its ancestry.
+        * Suggestion: enclose the necessary components within <h:form>"
+        * The error is displayed for any JSF page containing <h:inputHidden> tags.
+        ==========================================================================
+        -->
+        <div align="center">
+            <span class="headingText">#{requestController.selected.userId.firstName} #{requestController.selected.userId.lastName}'s Request</span>
+            <br/><br/>
+            <!--
+            Style the Google Map with id="map" using the 'map' style class defined in
+            siteStyles.css. This style definition is accessed in map.js in creating the map.
+            -->
+            <div id="map" class="map"></div>
+
+            <!-- The following are accessed in map.js for displaying directions on map -->
+            <h:inputHidden id="startLocationName" value="#{mapController.startingLocationName}" />
+            <h:inputHidden id="destinationLocationName" value="#{mapController.destinationLocationName}" />
+            <h:inputHidden id="startLocationLat" value="#{mapController.startingLocationLat}" />
+            <h:inputHidden id="startLocationLong" value="#{mapController.startingLocationLng}" />
+            <h:inputHidden id="destinationLocationLat" value="#{mapController.destinationLocationLat}" />
+            <h:inputHidden id="destinationLocationLong" value="#{mapController.destinationLocationLng}" />
+
+            <!-- travelMode (e.g: Walking, Driving) is accessed in map.js for displaying directions on map -->
+            <h:inputHidden id="travelMode" value="#{mapController.travelMode}" />
+
+            <script type="text/javascript">
+                initializeMap();  // Initialize and display a Google Map of VT campus
+            </script>
+            <br/>
+            <h:panelGroup>
+                <p:commandButton value="Add to Trip" icon="fas fa-plus" styleClass="rounded-button"
+                                 actionListener="#{rideController.addRequest(requestController.selected)}"
+                                 action="/driver/List?faces-redirect=true"/>
+                &nbsp;
+                <p:commandButton value="Back" icon="fas fa-arrow-left" styleClass="ui-button-outlined"
+                                 action="/driver/List?faces-redirect=true"/>
+            </h:panelGroup>
+        </div>
+    </ui:define>
+</ui:composition>
+</html>

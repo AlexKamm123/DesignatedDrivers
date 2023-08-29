@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+**********************************************************
+*   Statement of Compliance with the Stated Honor Code   *
+**********************************************************
+We hereby declare on our honor and affirm that
+
+ (1) We have not given or received any unauthorized help on this project, and
+ (2) All work is our own in this project.
+
+We are hereby writing our names as our signatures to declare that the above statements are true:
+
+      Conrad MacKethan, Andrew Meehan, Alex Kammann, Kurt Grzybowski, and Gregory Grace
+
+**********************************************************
+-->
+<!--
+  - Created by Team 7 and Osman Balci on 2023.4.20
+  - Copyright © 2023 Team 7 and Osman Balci. All rights reserved.
+  -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+<!-- This page is constructed based on the siteTemplate -->
+<ui:composition template="/template/siteTemplate.xhtml">
+
+    <!-- Create the content for this page below -->
+    <ui:define name="editableContent">
+        <div class="card" align="center">
+            <!--
+            ========================================
+            |   PrimeFaces Galleria Image Slider   |
+            ========================================
+            -->
+            <p:galleria value="#{galleriaManager.listOfPhotos}" var="aPhoto" numVisible="3"
+                        responsiveOptions="#{galleriaManager.responsiveOptions1}"
+                        circular="true" autoPlay="true" transitionInterval="4000"
+                        showCaption="true" style="max-width: 800px">
+
+                <p:graphicImage value="#{aPhoto.regularPhotoFilepath}" alt="#{aPhoto.title}" style="width: 100%; display: block;" />
+
+                <f:facet name="caption">
+                    <span class="p-mb-2">#{aPhoto.title}</span>
+                </f:facet>
+
+                <f:facet name="thumbnail">
+                    <p:graphicImage value="#{aPhoto.thumbnailPhotoFilepath}" alt="#{aPhoto.title}" style="display: block;" />
+                </f:facet>
+
+            </p:galleria>
+            <br/>
+        </div>
+    </ui:define>
+</ui:composition>
+
+</html>

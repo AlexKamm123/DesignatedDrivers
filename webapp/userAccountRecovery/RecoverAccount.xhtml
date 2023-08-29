@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  - Created by Osman Balci on 2023.2.17
+  - Copyright © 2023 Osman Balci. All rights reserved.
+  -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<!-- This page is constructed based on the siteTemplate -->
+<ui:composition template="/template/siteTemplate.xhtml">
+
+    <ui:define name="title">
+        <!-- Set the page title -->
+        <h:outputText value="Recover Account"/>
+    </ui:define>
+
+    <!-- Create the content for this page below -->
+    <ui:define name="editableContent">
+        <div align="center">
+            <h1>Sign In</h1>
+            <br/>
+            <h:form>
+                <!--
+                ================================
+                |    Username and Password     |
+                ================================
+                -->
+                <p:panelGrid columns="2" columnClasses="panelGridColumn1, panelGridColumn2">
+
+                    <h:outputLabel value="Username:" for="username"/>
+                    <p:inputText id="username" value="#{accountRecoveryManager.username}" style="width: 290px"
+                                 required="true" requiredMessage="Username is required.">
+                    </p:inputText>
+
+                    <h:outputLabel value="Password:" for="password"/>
+                    <p:password id="password" value="#{accountRecoveryManager.password}" style="width: 290px"
+                                feedback="false">
+                    </p:password>
+
+                </p:panelGrid>
+                <br/>
+                <!--
+                ================================
+                |         SUBMIT Button        |
+                ================================
+                -->
+                <p:commandButton id="Submit" value="Submit" icon="fas fa-arrow-up" styleClass="rounded-button"
+                                 ajax="false" action="#{accountRecoveryManager.recoverAccount()}"
+                                 update=":growlInfoMessage, :growlErrorMessage, :growlFatalMessage, :growlWarningMessage"/>
+                &nbsp;
+                <!--
+                ================================
+                |        CANCEL Button         |
+                ================================
+                -->
+                <p:button outcome="/signIn/SignIn" value="Cancel" icon="fas fa-ban" styleClass="ui-button-outlined"/>
+                <br/>
+            </h:form>
+            <br/><br/>
+        </div>
+    </ui:define>
+</ui:composition>
+</html>

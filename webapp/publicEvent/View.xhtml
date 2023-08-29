@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  - Created by Team 7 and Osman Balci on 2023.4.28
+  - Copyright © 2023 Team 7 and Osman Balci. All rights reserved.
+  -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+<ui:composition>
+    <!--
+    ==========================================================
+    |  Clicking the VIEW button in List.xhtml displays this  |
+    |  Dialog window showing the selected PublicEvent's data.|
+    ==========================================================
+    -->
+    <p:dialog id="PublicEventViewDlg" header="#{eventController.selected.name}" widgetVar="PublicEventViewDialog"
+              modal="true" position="center" appendTo="@(body)" width="90%" height="500"
+              showEffect="slide" hideEffect="fade" responsive="true" >
+        <h:form id="PublicEventViewForm" class="ui-datatable-data">
+            <div align="center">
+                <!-- Display the selected PublicEvent's cover image -->
+                <img src="#{eventController.getImage(eventController.selected)}"
+                     style="width:400px" alt=""  />
+                <br /><br />
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" columnClasses="panelGridColumn1, panelGridColumn2"
+                                 rendered="#{eventController.selected != null}">
+
+                        <!-- Event Name -->
+                        <h:outputText value="Name:"/>
+                        <h:outputText value="#{eventController.selected.name}"/>
+
+                        <!-- Event Location -->
+                        <h:outputText value="Location:"/>
+                        <h:outputText value="#{eventController.selected.address}"/>
+
+                        <!-- Event Start Time -->
+                        <h:outputText value="Start Time:"/>
+                        <h:outputText value="#{eventController.selected.startTime}" >
+                        </h:outputText>
+
+                        <!-- Event End Time -->
+                        <h:outputText value="End Time:"/>
+                        <h:outputText value="#{eventController.selected.endTime}">
+                        </h:outputText>
+
+                        <!-- Event Publisher -->
+                        <h:outputText value="Created By:"/>
+                        <h:outputText value="#{eventController.getUser(eventController.selected).username}"/>
+
+                    </p:panelGrid>
+                    <br/>
+                    &nbsp;
+                    <span class="titleSmall">Event Description</span>
+                    <br/>
+                    &nbsp;
+                    <br/>
+                    <fieldset style="width: 90%">
+                        <h:outputText value="#{eventController.selected.description}" escape="false"/>
+                    </fieldset>
+                </h:panelGroup>
+                <br />
+                <h:panelGroup>
+                    <!-- REQUEST Button -->
+                    <p:commandButton id="requestButton" value="Request Ride" icon="fas fa-taxi" styleClass="rounded-button"
+                                     actionListener="#{requestController.prepareCreate()}"
+                                     action="#{eventController.requestRide()}"
+                                     update=":growlErrorMessage"
+                                     disabled="#{empty eventController.selected}"/>
+                    &nbsp;
+                    <!-- CLOSE button -->
+                    <p:commandButton value="Close" icon="fas fa-window-close" styleClass="ui-button-outlined"
+                                     onclick="PF('PublicEventViewDialog').hide()" />
+                </h:panelGroup>
+            </div>
+        </h:form>
+    </p:dialog>
+</ui:composition>
+</html>

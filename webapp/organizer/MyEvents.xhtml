@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  - Created by Team 7 and Osman Balci on 2023.4.26
+  - Copyright © 2023 Team 7 and Osman Balci. All rights reserved.
+  -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+<!-- This page is constructed based on the siteTemplate -->
+<ui:composition template="/template/siteTemplate.xhtml">
+    <ui:define name="title">
+        <!-- Set the page title -->
+        <h:outputText value="List of My Events"/>
+    </ui:define>
+
+    <!-- Create the content for this page below -->
+    <ui:define name="editableContent">
+
+        <c:if test="#{facesContext.validationFailed}">
+            ${eventController.unselect()}
+        </c:if>
+
+        <f:metadata>
+            <f:viewAction action="#{eventController.unselect()}" rendered="#{facesContext.postback}"/>
+        </f:metadata>
+
+        <div align="center">
+            <h:form id="MyEventListForm">
+                <p:panel header="List of My Events">
+                    <p:dataTable id="datalist"
+                                 value="#{eventController.listOfMyEvents}"
+                                 var="aEvent"
+                                 widgetVar="myEventsDataTable"
+                                 selectionMode="single"
+                                 selection="#{eventController.selected}"
+                                 reflow="true"
+                                 showGridlines="true"
+                                 paginator="true"
+                                 rowKey="#{aEvent.id}"
+                                 rows="10"
+                                 rowsPerPageTemplate="5,10,20,30,50,70,90"
+                                 emptyMessage="No events found for the search query entered!">
+
+                        <p:ajax event="rowSelect" update="viewButton reqButton editButton deleteButton createButton"/>
+                        <p:ajax event="rowUnselect" update="viewButton reqButton editButton deleteButton createButton"/>
+
+
+                        <!--
+                        *************************
+                        *   Data Table Header   *
+                        *************************
+                        -->
+                        <f:facet name="header">
+                            <div align="center">
+                                <p:inputText id="globalFilter" onkeyup="PF('myEventsDataTable').filter()"
+                                             filterMatchMode="contains"
+                                             style="width: 250px"
+                                             placeholder="Enter Global Search Query"/>
+                                &nbsp;
+                                <p:commandButton type="button" value="Clear All Filters" styleClass="ui-button-outlined"
+                                                 icon="fas fa-undo" onclick="PF('myEventsDataTable').clearFilters()"/>
+                            </div>
+                        </f:facet>
+
+                        <!--
+                        *********************
+                        *    Name   *
+                        *********************
+                        -->
+                        <p:column headerText="Name" sortBy="#{aEvent.name}"
+                                  filterBy="#{aEvent.name}" filterMatchMode="contains"
+                                  style="vertical-align: top">
+                            <h:outputText value="#{aEvent.name}"/>
+                        </p:column>
+
+                        <!--
+                        ******************************
+                        *    Location   *
+                        ******************************
+                        -->
+                        <p:column headerText="Location"
+                                  style="vertical-align: top">
+                            <h:outputText value="#{aEvent.getAddress()}"
+                                          style="vertical-align: top; white-space:pre-line"/>
+
+
+                        </p:column>
+
+                        <!--
+                        ******************************
+                        *    Start Time   *
+                        ******************************
+                        -->
+                        <p:column headerText="Starts"
+                                  style="vertical-align: top">
+                            <h:outputText value="#{aEvent.getStartTime().toString()}" style="vertical-align: top"/>
+                        </p:column>
+
+                        <!--
+                        ******************************
+                        *    End Time   *
+                        ******************************
+                        -->
+                        <p:column headerText="Ends"
+                                  style="vertical-align: top">
+                            <h:outputText value="#{aEvent.getEndTime().toString()}" style="vertical-align: top"/>
+                        </p:column>
+
+                        <!--
+                        ******************************
+                        *    Visibility   *
+                        ******************************
+                        -->
+                        <p:column headerText="Privacy"
+                                  style="vertical-align: top">
+                            <h:outputText value="#{aEvent.visibility}" style="vertical-align: top"/>
+                        </p:column>
+
+                        <!--
+                        ******************************
+                        *    Passenger Password   *
+                        ******************************
+                        -->
+                        <p:column headerText="Passenger Password"
+                                  style="vertical-align: top">
+                            <h:outputText value="#{aEvent.passengerCode}" style="vertical-align: top"/>
+                        </p:column>
+
+                        <!--
+                        ******************************
+                        *    Driver Code   *
+                        ******************************
+                        -->
+                        <p:column headerText="Driver Password"
+                                  style="vertical-align: top">
+                            <h:outputText value="#{aEvent.driverCode}" style="vertical-align: top"/>
+                        </p:column>
+
+                        <!--
+                        *********************
+                        *    Image   *
+                        *********************
+                        -->
+                        <p:column headerText="Event Image" style="width: 80px; text-align: center; vertical-align: top">
+                            <img src="#{eventController.getImage(aEvent)}"
+                                 alt="Event Photo" width="60px"/>
+                        </p:column>
+
+
+                        <!--
+                        *************************
+                        *   Data Table Footer   *
+                        *************************
+                        -->
+                        <f:facet name="footer">
+                            <div align="center">
+                                <!-- REQUEST button -->
+                                <p:commandButton id="reqButton" value="View Requests" icon="fas fa-search" styleClass="rounded-button"
+                                                 action="/organizer/Requests?faces-redirect=true" disabled="#{empty eventController.selected}"/>
+                                &nbsp;
+                                <!-- VIEW button -->
+                                <p:commandButton id="viewButton" value="View" icon="fas fa-eye"
+                                                 styleClass="rounded-button"
+                                                 update=":MyEventViewDlg" oncomplete="PF('MyEventViewDialog').show()"
+                                                 disabled="#{empty eventController.selected}"/>
+                                &nbsp;
+                                <!-- EDIT button -->
+                                <p:commandButton id="editButton" value="Edit" icon="fas fa-edit" styleClass="rounded-button"
+                                                 action="/organizer/Edit?faces-redirect=true" disabled="#{empty eventController.selected}"/>
+                                &nbsp;
+                                <!-- ***************************************************
+                                Display a Confirmation dialog for the DELETE button
+                                id is used since it is referenced to be activated or not
+                                **************************************************** -->
+                                <!-- DELETE button -->
+                                <p:commandButton id="deleteButton" value="Delete" icon="fas fa-trash-alt"
+                                                 styleClass="rounded-button"
+                                                 actionListener="#{eventController.destroy()}"
+                                                 update="datalist,:growlInfoMessage,:growlWarningMessage,:growlErrorMessage,:growlFatalMessage"
+                                                 disabled="#{empty eventController.selected}">
+
+                                    <p:confirm header="Deletion Confirmation"
+                                               message="Are you sure you want to permanently delete the selected event #{eventController.selected.name} from the database?"/>
+                                </p:commandButton>
+
+                                <p:confirmDialog id="confirmDialogBox" global="true" showEffect="fade" hideEffect="fade"
+                                                 responsive="true" width="350">
+                                    <div align="center">
+                                        <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no"
+                                                         icon="fas fa-window-close"/>
+                                        &nbsp;
+                                        <p:commandButton value="Yes" type="button"
+                                                         class="ui-confirmdialog-yes ui-button-danger"
+                                                         icon="fas fa-check-square"/>
+                                    </div>
+                                </p:confirmDialog>
+                                <!-- *******************************************
+                                End of Display of the DELETE Confirmation dialog
+                                ******************************************** -->
+                                &nbsp;
+                                <!-- CREATE button -->
+                                <p:commandButton id="createButton" value="Create" icon="fas fa-plus"
+                                                 styleClass="rounded-button"
+                                                 actionListener="#{eventController.prepareCreate()}"
+                                                 action="/organizer/Create?faces-redirect=true"/>
+                            </div>
+                        </f:facet>
+                    </p:dataTable>
+                </p:panel>
+            </h:form>
+        </div>
+
+
+        <!-- Clicking the View button displays the included MyEvnets.xhtml file in a dialog window on top of this page. -->
+        <ui:include src="/organizer/View.xhtml"/>
+
+    </ui:define>
+</ui:composition>
+</html>

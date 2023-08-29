@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  - Created by Osman Balci on 2023.2.17
+  - Copyright © 2023 Osman Balci. All rights reserved.
+  -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+<!-- This page is constructed based on the siteTemplate -->
+<ui:composition template="/template/siteTemplate.xhtml">
+    <ui:define name="title">
+        <!-- Set the page title -->
+        <h:outputText value="Sign In"/>
+    </ui:define>
+
+    <!-- Create the content for this page below -->
+    <ui:define name="editableContent">
+        <div align="center">
+            <h1>Sign In</h1>
+            <br/>
+            <h:form>
+                <!--
+                ================================
+                |    Username and Password     |
+                ================================
+                -->
+                <p:panelGrid columns="2" columnClasses="panelGridColumn1, panelGridColumn2">
+
+                    <h:outputLabel value="Username:" for="username"/>
+                    <p:inputText id="username" value="#{loginManager.username}" style="width: 290px"
+                                 required="true" requiredMessage="Username is required.">
+                    </p:inputText>
+
+                    <h:outputLabel value="Password:" for="password"/>
+                    <p:password id="password" value="#{loginManager.password}" style="width: 290px"
+                                feedback="false">
+                    </p:password>
+
+                </p:panelGrid>
+                <br/>
+                <!--
+                ==========================
+                |        reCAPTCHA       |
+                ==========================
+                See the reCAPTCHA code snippet on the course website to learn about it.
+                *** Do NOT forget to enter the 2 context parameters in web.xml ***
+                -->
+
+<!--                <p:captcha label="reCAPTCHA" required="true"-->
+<!--                           requiredMessage="Please check the box to verify that you are not a robot!"/>-->
+                <br/><br/>
+
+                <!--
+                ==========================
+                |         Menubar        |
+                ==========================
+                -->
+                <p:menubar>
+                    <p:menuitem value="Sign In" action="#{loginManager.loginUser()}" ajax="false" icon="fas fa-sign-in-alt"/>
+                    <p:menuitem value="Create Account" outcome="/userAccount/CreateAccount" icon="fas fa-user-plus"/>
+                    <p:menuitem value="Forgot Password" outcome="/userPasswordChange/EnterUsername" icon="fas fa-key"/>
+                    <p:menuitem value="Recover Your Account" outcome="/userAccountRecovery/RecoverAccount" icon="fas fa-retweet"/>
+                    <p:menuitem value="Cancel" outcome="/index" icon="fas fa-ban"/>
+                </p:menubar>
+            </h:form>
+        </div>
+        <br/><br/>
+    </ui:define>
+</ui:composition>
+</html>

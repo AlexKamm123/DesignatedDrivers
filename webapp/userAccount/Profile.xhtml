@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  - Created by Team 7 and Osman Balci on 2023.4.24
+  - Copyright © 2023 Team 7 and Osman Balci. All rights reserved.
+  -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:p="http://primefaces.org/ui">
+
+<!-- This page is constructed based on the siteTemplate -->
+<ui:composition template="/template/siteTemplate.xhtml">
+
+    <ui:define name="title">
+        <!-- Set the page title -->
+        <h:outputText value="My Account"/>
+    </ui:define>
+
+    <!-- Create the content for this page below -->
+    <ui:define name="editableContent">
+        <c:if test="#{userController.userIsSignedIn() == true}">
+            <h:form id="UserProfileForm">
+                <!--
+                **********************
+                *       Sidebar      *
+                **********************
+                -->
+                <p:sidebar widgetVar="sidebar" position="left">
+                    <br/><br/><br/><br/>
+                    <div align="center">
+                        <h1>Account Settings</h1>
+                    </div>
+                    <br/>
+                    <div style="padding-left: 15%">
+                        <p:menu>
+                            <p:menuitem value="Edit Profile" action="#{userController.prepareForEdit()}"
+                                        ajax="false" icon="fas fa-edit"/>
+                            <p:menuitem value="Edit Car" action="#{carController.editCar()}"
+                                        ajax="false" icon="fas fa-car"/>
+                            <p:menuitem value="Change Photo" outcome="/userPhoto/ChangePhoto" icon="fas fa-camera"/>
+                            <p:menuitem value="Change Password" outcome="/userPasswordChange/EnterUsername"
+                                        icon="fas fa-key"/>
+                            <p:menuitem value="Delete Account" outcome="/userAccount/DeleteAccount"
+                                        icon="fas fa-trash-alt"/>
+                        </p:menu>
+                    </div>
+                    <br/>
+                    <div align="center">
+                        <!-- Two-Factor Authentication Status -->
+                        <c:if test="#{userController.signedInUser.twoFactorAuthenticationStatus == 1}">
+                            <span class="titleSmall">Two-Factor Authentication<br/>is ON via Email</span>
+                        </c:if>
+                        <c:if test="#{userController.signedInUser.twoFactorAuthenticationStatus == 2}">
+                            <span class="titleSmall">Two-Factor Authentication<br/>is ON via SMS</span>
+                        </c:if>
+                        <c:if test="#{userController.signedInUser.twoFactorAuthenticationStatus == 0}">
+                            <span class="titleSmall">Two-Factor Authentication<br/>is Turned OFF</span>
+                        </c:if>
+                    </div>
+                </p:sidebar>
+
+                <!--
+                **********************
+                *   User's Profile   *
+                **********************
+                -->
+                <div align="center">
+                    <h1> #{userController.signedInUser.firstName}&nbsp;#{userController.signedInUser.lastName}'s Account Profile </h1>
+                    <!--
+                    USER'S PROFILE PHOTO: Display the user's account profile photo in a circle.
+                    The cache="false" option enables immediate display of a newly uploaded photo without using cache.
+                    -->
+                    <p:graphicImage cache="false" styleClass="profilePhoto" value="#{userController.userPhoto()}"/>
+                    <br/><br/>
+                    <p:panelGrid columns="2" columnClasses="panelGridColumn1, panelGridColumn2">
+
+                        <h:outputText value="User Type:"/>
+                        <h:outputText value="#{userController.signedInUser.userType}"/>
+
+                        <h:outputText value="First Name:"/>
+                        <h:outputText value="#{userController.signedInUser.firstName}"/>
+
+                        <h:outputText value="Middle Name:"/>
+                        <h:outputText value="#{userController.signedInUser.middleName}"/>
+
+                        <h:outputText value="Last Name:"/>
+                        <h:outputText value="#{userController.signedInUser.lastName}"/>
+
+                        <h:outputText value="Address Line 1:"/>
+                        <h:outputText value="#{userController.signedInUser.address1}"/>
+
+                        <h:outputText value="Address Line 2:"/>
+                        <h:outputText value="#{userController.signedInUser.address2}"/>
+
+                        <h:outputText value="City:"/>
+                        <h:outputText value="#{userController.signedInUser.city}"/>
+
+                        <h:outputText value="State:"/>
+                        <h:outputText value="#{userController.signedInUser.state}"/>
+
+                        <h:outputText value="Zip Code"/>
+                        <h:outputText value="#{userController.signedInUser.zipcode}"/>
+
+                        <h:outputText value="Email:"/>
+                        <h:outputText value="#{userController.signedInUser.email}"/>
+
+                        <h:outputText value="Username:"/>
+                        <h:outputText value="#{userController.signedInUser.username}"/>
+
+                        <h:outputText value="Account:"/>
+                        <p:commandButton value="Settings" type="button" onclick="PF('sidebar').show()"
+                                         icon="fas fa-cog" styleClass="ui-button-outlined"/>
+                    </p:panelGrid>
+                </div>
+            </h:form>
+        </c:if>
+        <c:if test="#{userController.userIsSignedIn() == false}">
+            <div align="center"><h1>Cybercriminal Activity is Detected and Rejected!</h1></div>
+        </c:if>
+    </ui:define>
+</ui:composition>
+</html>

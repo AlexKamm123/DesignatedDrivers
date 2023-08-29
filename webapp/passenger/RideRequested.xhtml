@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  - Created by Team 7 and Osman Balci on 2023.4.30
+  - Copyright © 2023 Team 7 and Osman Balci. All rights reserved.
+  -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+<ui:composition template="/template/siteTemplate.xhtml">
+    <ui:define name="title">
+        <h:outputText value="Ride Requested"/>
+    </ui:define>
+
+    <ui:define name="editableContent">
+
+        <div align="center">
+            <h:panelGroup id="display">
+                <br/>
+                <c:choose>
+                    <!-- When a driver has not yet accepted the ride -->
+                    <c:when test="#{empty rideController.rideForUser}">
+                        <br/>
+                        <span class="title">Your ride has been successfully requested!</span>
+                        &nbsp;
+                        <span class="title">There are #{requestController.getNumRequests()} people currently waiting for a ride</span>
+                        <br/><br/><br/>
+                        <h:panelGroup>
+                            <p:commandButton value="Refresh" icon="fas fa-upload"
+                                             styleClass="rounded-button" ajax="true"
+                                             actionListener="#{rideController.refresh()}"
+                                             update="display,:growlInfoMessage,:growlWarningMessage,:growlErrorMessage,:growlFatalMessage"/>
+                        </h:panelGroup>
+                        <br/>
+                    </c:when>
+
+                    <!-- When the ride has been accepted -->
+                    <c:otherwise>
+                        <br/>
+                        &nbsp;
+                        <span class="title">#{rideController.rideForUser.carId.userId.firstName} has accepted your ride!</span>
+                        <br/>
+                        &nbsp;
+                        <span class="title">Driver Phone Number: #{rideController.rideForUser.carId.userId.cellPhoneNumber}</span>
+                        <br/>
+                        &nbsp;
+                        <span class="title">Driver Car: #{rideController.rideForUser.carId.make} #{rideController.rideForUser.carId.model}</span>
+                        <br/>
+                        &nbsp;
+                        <span class="title">License Plate: #{rideController.rideForUser.carId.licensePlate}</span>
+                        <br/>
+                        &nbsp;
+                        <span class="title">Number of Passengers: #{rideController.rideForUser.numOccupants}</span>
+                        <br/>
+                        &nbsp;
+                        <span class="title">Destination ETA: #{rideController.rideForUser.time}</span>
+                        <br/><br/>
+                        <h:panelGroup>
+                            <!-- Ride Completed Button -->
+                            <p:commandButton value="Ride Completed" icon="fas fa-stop"
+                                             styleClass="ui-button-outlined"
+                                             action="/index?faces-redirect=true"/>
+                        </h:panelGroup>
+                    </c:otherwise>
+                </c:choose>
+            </h:panelGroup>
+        </div>
+        <br/><br/>
+    </ui:define>
+</ui:composition>
+</html>

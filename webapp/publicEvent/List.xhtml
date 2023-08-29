@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  - Created by Team 7 and Osman Balci on 2023.4.27
+  - Copyright © 2023 Team 7 and Osman Balci. All rights reserved.
+  -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+<!-- This page is constructed based on the siteTemplate -->
+<ui:composition template="/template/siteTemplate.xhtml">
+    <ui:define name="title">
+        <!-- Set the page title -->
+        <h:outputText value="List of Public Events" />
+    </ui:define>
+
+    <!-- Create the content for this page below -->
+    <ui:define name="editableContent">
+
+        <c:if test="#{facesContext.validationFailed}">
+            ${eventController.unselect()}
+        </c:if>
+
+        <f:metadata>
+            <f:viewAction action="#{eventController.unselect()}" rendered="#{facesContext.postback}" />
+        </f:metadata>
+
+        <div align="center">
+            <h:form id="PublicEventListForm">
+                <p:panel header="List of Public Events">
+                    <p:dataTable id="datalist"
+                                 value="#{eventController.listOfPublicEvents}"
+                                 var="aEvent"
+                                 widgetVar="publicEventsDataTable"
+                                 selectionMode="single"
+                                 selection="#{eventController.selected}"
+                                 reflow="true"
+                                 showGridlines="true"
+                                 paginator="true"
+                                 rowKey="#{aEvent.id}"
+                                 rows="10"
+                                 rowsPerPageTemplate="5,10,20,30,50,70,90"
+                                 emptyMessage="No public events found for the search query entered!" >
+
+                        <p:ajax event="rowSelect"   update="viewButton requestButton mapButton"/>
+                        <p:ajax event="rowUnselect" update="viewButton requestButton mapButton"/>
+
+                        <!--
+                        *************************
+                        *   Data Table Header   *
+                        *************************
+                        -->
+                        <f:facet name="header">
+                            <div align="center">
+                                <p:inputText id="globalFilter" onkeyup="PF('publicEventsDataTable').filter()" filterMatchMode="contains"
+                                             style="width: 250px"
+                                             placeholder="Enter Global Search Query" />
+                                &nbsp;
+                                <p:commandButton type="button" value="Clear All Filters" styleClass="ui-button-outlined"
+                                                 icon="fas fa-undo" onclick="PF('publicEventsDataTable').clearFilters()" />
+                            </div>
+                        </f:facet>
+
+                        <!--
+                        *********************
+                        *    Name   *
+                        *********************
+                        -->
+                        <p:column headerText="Name" sortBy="#{aEvent.name}" filterBy="#{aEvent.name}"
+                                  filterMatchMode="contains" style="vertical-align: top">
+                            <h:outputText value="#{aEvent.name}"/>
+                        </p:column>
+
+                        <!--
+                        ******************************
+                        *    Location   *
+                        ******************************
+                        -->
+                        <p:column headerText="Location" style="vertical-align: top">
+                            <h:outputText value="#{aEvent.getAddress()}" style="vertical-align: top; white-space:pre-line"/>
+                        </p:column>
+
+                        <!--
+                        ******************************
+                        *    Start Time   *
+                        ******************************
+                        -->
+                        <p:column headerText="Starts" style="vertical-align: top">
+                            <h:outputText value="#{aEvent.getStartTime().toString()}" style="vertical-align: top"/>
+                        </p:column>
+
+                        <!--
+                        ******************************
+                        *    End Time   *
+                        ******************************
+                        -->
+                        <p:column headerText="Ends" style="vertical-align: top">
+                            <h:outputText value="#{aEvent.getEndTime().toString()}" style="vertical-align: top"/>
+                        </p:column>
+
+                        <!--
+                        *********************
+                        *    Image   *
+                        *********************
+                        -->
+                        <p:column headerText="Event Image" style="width: 80px; text-align: center; vertical-align: top">
+                            <img src="#{eventController.getImage(aEvent)}" alt="Event Photo" width="60px"/>
+                        </p:column>
+
+                        <p:column headerText="Created By" style="vertical-align: top">
+                            <h:outputText value="#{eventController.getUser(aEvent).username}"/>
+                        </p:column>
+                        <!--
+                        *************************
+                        *   Data Table Footer   *
+                        *************************
+                        -->
+                        <f:facet name="footer">
+                            <div align="center">
+                                <!-- VIEW button -->
+                                <p:commandButton id="viewButton" value="View" icon="fas fa-eye" styleClass="rounded-button"
+                                                 update=":PublicEventViewDlg" oncomplete="PF('PublicEventViewDialog').show()"
+                                                 disabled="#{empty eventController.selected}"/>
+                                &nbsp;
+                                <!-- REQUEST button -->
+                                <p:commandButton id="requestButton" value="Request Ride" icon="fas fa-taxi" styleClass="rounded-button"
+                                                 actionListener="#{requestController.prepareCreate()}"
+                                                 action="#{eventController.requestRide()}"
+                                                 update=":growlErrorMessage"
+                                                 disabled="#{empty eventController.selected}"/>
+                                &nbsp;
+                                <!-- MAP button -->
+                                <p:commandButton id="mapButton" value="Show on Map" icon="fas fa-map-location-dot" styleClass="rounded-button"
+                                                 actionListener="#{mapController.geocode(eventController.selected.address)}"
+                                                 action="/publicEvent/GeocodedQueryOnMap?faces-redirect=true"
+                                                 disabled="#{empty eventController.selected}"/>
+                            </div>
+                        </f:facet>
+                    </p:dataTable>
+                </p:panel>
+            </h:form>
+        </div>
+
+        <!-- Clicking the View button displays the included list.xhtml file in a dialog window on top of this page. -->
+        <ui:include src="/publicEvent/View.xhtml"/>
+
+    </ui:define>
+</ui:composition>
+</html>
